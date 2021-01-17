@@ -2,14 +2,14 @@
 # Simple command line function to encrypt directories
 
 encryptdir() {
-  if [ $# -ne 1 ]
-  then
-    echo "Supply one directory as an argument."
+  if [[ $# -lt 1 || $# -gt 2 ]]; then
+    echo "Usage: encryptdir input [output]"
     return
+  else
+    :
   fi
 
-  if [ -d "$1" ]
-  then
+  if [ -d "$1" ]; then
     dir=$(echo $1 | sed 's:/*$::')
   else
     echo "Directory $1 does not exist."
@@ -21,13 +21,12 @@ encryptdir() {
   printf "\nConfirm your passphrase: "
   read -s p2
   
-  if [[ $p1 != $p2 ]]
-  then
+  if [[ $p1 != $p2 ]]; then
     while : ; do
       printf "\nPassphrases must match.\nPassphrase: "
       read -s p1
       printf "\nConfirm: "
-      read -s p2
+      read -s p2 # skip the password dialog box
       [[ $p1 != $p2 ]] || break
     done
   fi
@@ -36,12 +35,16 @@ encryptdir() {
   tar -czvf "$dir.tar.gz" "$dir"
   
   printf "\nEncryption started...\n"
-  gpg --passphrase "$p1" --batch -c -v --cipher-algo AES256 --no-symkey-cache "$dir.tar.gz"
+  gpg --passphrase "$p2" --batch -c -v --cipher-algo AES256 --no-symkey-cache "$dir.tar.gz"
   rm "$dir.tar.gz" # rm -rf "$dir"
   
-  if [ -f "$dir.tar.gz.gpg" ]
-  then
-    printf "\nDirectory $dir has been encrypted with AES-256.\n"
+  if [ -f "$dir.tar.gz.gpg" ]; then # encryption successful
+    if [[ $# -eq 2 ]]; then # output parameter
+      mv "$dir.tar.gz.gpg" "$2"
+      printf "\nDirectory $dir has been AES-256 encrypted and written to file $2.\n"
+    else
+      printf "\nDirectory $dir has been AES-256 encrypted.\n"
+    fi
   else
     printf "\nThere was a problem.\n"
   fi

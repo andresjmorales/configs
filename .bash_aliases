@@ -1,7 +1,6 @@
 #ALL ALIASES
 
 alias edex='"/home/andres/Downloads/eDEX-UI.Linux.x86_64.AppImage" %U'
-alias saltine='python3'
 alias ?='cat ~/.bash101' # bash commands
 alias x='exit'
 alias la='ls -la'

@@ -1,0 +1,48 @@
+
+# Simple command line function to encrypt directories
+
+encryptdir() {
+  if [ $# -ne 1 ]
+  then
+    echo "Supply one directory as an argument."
+    return
+  fi
+
+  if [ -d "$1" ]
+  then
+    dir=$(echo $1 | sed 's:/*$::')
+  else
+    echo "Directory $1 does not exist."
+    return
+  fi
+
+  printf "You are about to encrypt the entire $dir directory.\n\nEnter a passphrase to generate a symmetric key: "
+  read -s p1
+  printf "\nConfirm your passphrase: "
+  read -s p2
+  
+  if [[ $p1 != $p2 ]]
+  then
+    while : ; do
+      printf "\nPassphrases must match.\nPassphrase: "
+      read -s p1
+      printf "\nConfirm: "
+      read -s p2
+      [[ $p1 != $p2 ]] || break
+    done
+  fi
+  
+  printf "\n\nCompressing directory...\n"
+  tar -czvf "$dir.tar.gz" "$dir"
+  
+  printf "\nEncryption started...\n"
+  gpg --passphrase "$p1" --batch -c -v --cipher-algo AES256 --no-symkey-cache "$dir.tar.gz"
+  rm "$dir.tar.gz" # rm -rf "$dir"
+  
+  if [ -f "$dir.tar.gz.gpg" ]
+  then
+    printf "\nDirectory $dir has been encrypted with AES-256.\n"
+  else
+    printf "\nThere was a problem.\n"
+  fi
+}

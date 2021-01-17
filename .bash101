@@ -1,0 +1,27 @@
+
+bash command help
+.                     current directory
+..                    parent directory
+ls                    lists everything in directory
+cd <dir>              change directory to dir
+rm [-r] <file/dir>    remove file or -r for directory
+mkdir <dir>           create directory dir
+import <file>         take a screenshot, saves to file
+cat <file>            displays file contents
+ssh <host>            secure shell into hostname
+sftp <host>           get/put files from hostname
+chmod X <file>        change file permissions to X
+wget <url>            download file from url
+find <file>           searches all directories for file
+grep <regex>          searches for regex in any file
+ex <file>             extracts any compressed folder
+<command> &           fork process asynchronously
+sudo <command>        superuser do
+
+tar -M [tarball] <dir>
+M -> c : create archive
+  -> x : extract archive
+  -> z : gzip archive
+  -> v : verbose
+  -> f : specify tar name
+
